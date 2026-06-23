@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Weghachi AI — Website Design Drafts</title>
+<meta name="description" content="Three design directions for weghachi.ai — Liquid Gold, Clarity, and Terrain. Review each and choose a direction to refine." />
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Space+Grotesk:wght@400;500&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0a0a0c; --bg2:#101015; --panel:#15161c; --line:rgba(255,255,255,.09);
+    --ink:#f4f1ea; --mut:#928e85; --mut2:#6c6960;
+    --gold:#e8c25a; --gold-deep:#b8860b; --gold-soft:#f4d58d; --green:#00a86b;
+    --r:20px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--ink);
+    -webkit-font-smoothing:antialiased; line-height:1.6; overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+
+  /* ambient gold glow background */
+  .ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .ambient::before,.ambient::after{
+    content:"";position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;
+  }
+  .ambient::before{width:560px;height:560px;left:-160px;top:-180px;
+    background:radial-gradient(circle,rgba(232,194,90,.18),transparent 70%);
+    animation:float1 16s ease-in-out infinite}
+  .ambient::after{width:620px;height:620px;right:-200px;bottom:-160px;
+    background:radial-gradient(circle,rgba(0,168,107,.10),transparent 70%);
+    animation:float2 20s ease-in-out infinite}
+  @keyframes float1{50%{transform:translate(60px,40px)}}
+  @keyframes float2{50%{transform:translate(-50px,-30px)}}
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .stage{position:relative;z-index:2}
+
+  /* top bar */
+  header{padding:30px 0 0}
+  .bar{display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:.14em;font-size:14px}
+  .drop{width:20px;height:26px;display:block}
+  .pill{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);
+    border:1px solid var(--line);border-radius:100px;padding:8px 15px}
+
+  /* hero intro */
+  .intro{padding:78px 0 40px;max-width:820px}
+  .ey{display:inline-flex;align-items:center;gap:10px;font-size:12.5px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:26px}
+  .ey::before{content:"";width:30px;height:1px;background:linear-gradient(90deg,var(--gold-deep),transparent)}
+  h1{font-family:'Sora',sans-serif;font-weight:800;letter-spacing:-.03em;line-height:1.04;
+    font-size:clamp(2.5rem,6.2vw,4.5rem)}
+  h1 .g{background:linear-gradient(180deg,var(--gold-soft),var(--gold) 45%,var(--gold-deep));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lede{margin-top:24px;font-size:clamp(1.05rem,1.7vw,1.28rem);color:var(--mut);max-width:680px}
+  .lede b{color:var(--ink);font-weight:600}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .chip{font-size:12.5px;color:var(--mut);border:1px solid var(--line);border-radius:100px;
+    padding:7px 14px;background:rgba(255,255,255,.02)}
+  .chip b{color:var(--gold-soft);font-weight:600}
+
+  /* cards */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:26px 0 40px}
+  .card{position:relative;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+    background:var(--panel);display:flex;flex-direction:column;min-height:480px;
+    transition:transform .5s cubic-bezier(.2,.7,.2,1),border-color .4s,box-shadow .5s;
+    opacity:0;transform:translateY(26px)}
+  .card.in{opacity:1;transform:none}
+  .card:hover{transform:translateY(-6px);border-color:rgba(232,194,90,.4);
+    box-shadow:0 30px 60px -28px rgba(0,0,0,.8)}
+  .card:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .preview{height:230px;position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .num{position:absolute;top:14px;left:16px;z-index:4;font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.1em;color:rgba(255,255,255,.55);mix-blend-mode:difference}
+  .body{padding:24px 24px 26px;display:flex;flex-direction:column;flex:1}
+  .cname{font-family:'Sora',sans-serif;font-weight:700;font-size:1.42rem;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0}
+  .tag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);
+    border:1px solid var(--line);border-radius:6px;padding:4px 9px}
+  .desc{margin-top:16px;color:var(--mut);font-size:.95rem;flex:1}
+  .open{margin-top:20px;display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:.95rem;color:var(--gold-soft)}
+  .open svg{transition:transform .35s}
+  .card:hover .open svg{transform:translateX(5px)}
+
+  /* preview 1 — liquid gold */
+  .pv1{background:radial-gradient(120% 140% at 70% 0,#1c160a,#070708 60%)}
+  .pv1 .hl{position:absolute;left:22px;bottom:30px;right:22px;font-family:'Sora',sans-serif;
+    font-weight:800;font-size:1.55rem;line-height:1.05;letter-spacing:-.02em}
+  .pv1 .hl span{background:linear-gradient(180deg,var(--gold-soft),var(--gold-deep));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .pv1 .orb{position:absolute;width:150px;height:150px;border-radius:50%;right:-30px;top:-30px;
+    background:radial-gradient(circle at 40% 35%,#fff2cf,var(--gold) 35%,var(--gold-deep) 60%,transparent 72%);
+    filter:blur(2px);opacity:.85;animation:pulse 5s ease-in-out infinite}
+  @keyframes pulse{50%{transform:scale(1.08);opacity:1}}
+
+  /* preview 2 — clarity (light) */
+  .pv2{background:linear-gradient(180deg,#fbfaf6,#f1ede3)}
+  .pv2 .node{position:absolute;width:34px;height:34px;border-radius:9px;background:#fff;
+    border:1px solid #e7e2d6;box-shadow:0 6px 16px -8px rgba(20,22,26,.25);
+    display:grid;place-items:center}
+  .pv2 .node svg{width:16px;height:16px}
+  .pv2 .ln{position:absolute;height:2px;background:linear-gradient(90deg,#d9b94e,#e7e2d6);top:111px;border-radius:2px}
+  .pv2 .pkt{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--gold-deep);
+    top:108px;box-shadow:0 0 10px var(--gold);animation:run 3.4s linear infinite}
+  @keyframes run{0%{left:46px}100%{left:262px}}
+  .pv2 .cap{position:absolute;left:22px;bottom:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    letter-spacing:.08em;color:#9b8a3e}
+  .pv2 .badge{position:absolute;right:18px;bottom:18px;font-size:11px;color:var(--green);
+    border:1px solid rgba(0,135,83,.3);background:rgba(0,135,83,.07);border-radius:6px;padding:4px 8px;font-weight:600}
+
+  /* preview 3 — terrain (sand + serif) */
+  .pv3{background:#efe7d8}
+  .pv3 .topo{position:absolute;inset:0;opacity:.6}
+  .pv3 .aa{position:absolute;left:22px;bottom:26px;font-family:'Fraunces',serif;font-weight:600;
+    font-size:2.6rem;color:#15140f;line-height:.9}
+  .pv3 .aa em{color:var(--gold-deep);font-style:italic}
+  .pv3 .coord{position:absolute;right:18px;top:18px;font-family:'Space Grotesk',sans-serif;
+    font-size:10px;letter-spacing:.12em;color:#8a7c52;text-align:right;text-transform:uppercase}
+
+  /* footnote */
+  .note{border-top:1px solid var(--line);margin-top:24px;padding:34px 0 70px;color:var(--mut);font-size:.95rem;
+    display:flex;flex-wrap:wrap;gap:26px;justify-content:space-between;align-items:flex-start}
+  .note b{color:var(--ink);font-weight:600}
+  .note .col{max-width:540px}
+  .note code{font-family:'IBM Plex Mono',monospace;font-size:.84em;color:var(--gold-soft);
+    background:rgba(232,194,90,.08);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+  .steps{margin-top:12px;display:flex;flex-direction:column;gap:7px}
+  .steps span{display:flex;gap:10px;align-items:baseline}
+  .steps i{color:var(--gold);font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:.8em}
+
+  @media(max-width:920px){.grid{grid-template-columns:1fr;max-width:480px;margin:0 auto}}
+  @media(max-width:560px){
+    .wrap{padding:0 20px}.intro{padding:54px 0 30px}
+    .pill{display:none}.note{flex-direction:column;gap:18px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    .card{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="grain"></div>
+
+<div class="stage">
+<header><div class="wrap bar">
+  <div class="brand">
+    <svg class="drop" viewBox="0 0 20 26" fill="none" aria-hidden="true">
+      <defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f4d58d"/><stop offset=".5" stop-color="#e8c25a"/><stop offset="1" stop-color="#b8860b"/>
+      </linearGradient></defs>
+      <path d="M10 0C10 0 1 11 1 18a9 9 0 0 0 18 0c0-7-9-18-9-18Z" fill="url(#dg)"/>
+      <ellipse cx="7" cy="15" rx="2.4" ry="3.4" fill="#fff" opacity=".5"/>
+    </svg>
+    <span>WEGHACHI&nbsp;AI</span>
+  </div>
+  <div class="pill">Design Drafts · v1</div>
+</div></header>
+
+<main class="wrap">
+  <section class="intro">
+    <span class="ey">Choose a direction</span>
+    <h1>Three ways to tell the <span class="g">Weghachi</span> story.</h1>
+    <p class="lede">Same company, three distinct design languages. Open each draft full-screen, then
+      tell me which one to take forward — I'll refine the winner (and we can graft the best ideas
+      from the others). All are <b>bare HTML/CSS/JS</b>, ready to host on GitHub Pages.</p>
+    <div class="meta">
+      <span class="chip"><b>Concept:</b> oil · gas · gold · Nigeria · AI</span>
+      <span class="chip"><b>Inspiration:</b> Apple · Stripe · award-winning editorial</span>
+      <span class="chip"><b>Brand:</b> weghachi.ai</span>
+    </div>
+  </section>
+
+  <section class="grid" aria-label="Design drafts">
+
+    <!-- DRAFT 1 -->
+    <a class="card" href="draft-1-liquid-gold/" aria-label="Open Draft 1 — Liquid Gold">
+      <div class="preview pv1">
+        <span class="num">01 / LIQUID GOLD</span>
+        <div class="orb"></div>
+        <div class="hl">Every Naira<br/><span>recovered.</span></div>
+      </div>
+      <div class="body">
+        <div class="cname">Liquid Gold</div>
+        <div class="tags"><span class="tag">Dark</span><span class="tag">Cinematic</span><span class="tag">Luxury</span></div>
+        <p class="desc">Deep black canvas with flowing molten-gold light. Oil is black, money is gold.
+          An Apple-style dark product page — quiet, premium, jaw-dropping.</p>
+        <span class="open">Open draft
+          <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M1 7h15M11 1l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </a>
+
+    <!-- DRAFT 2 -->
+    <a class="card" href="draft-2-clarity/" aria-label="Open Draft 2 — Clarity">
+      <div class="preview pv2">
+        <span class="num" style="color:#5c6066">02 / CLARITY</span>
+        <div class="node" style="left:46px;top:94px"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#b8860b" stroke-width="1.6"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#b8860b" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <div class="ln" style="left:80px;width:60px"></div>
+        <div class="node" style="left:140px;top:94px"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="#00a86b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="ln" style="left:174px;width:60px"></div>
+        <div class="node" style="left:234px;top:94px"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4Z" stroke="#b8860b" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div class="pkt"></div>
+        <div class="cap">SOURCE-TO-PAY · LIVE AUDIT</div>
+        <div class="badge">NPT −6h ✓</div>
+      </div>
+      <div class="body">
+        <div class="cname">Clarity</div>
+        <div class="tags"><span class="tag">Light</span><span class="tag">Precise</span><span class="tag">Enterprise</span></div>
+        <p class="desc">Stripe meets Linear: crisp white space, exact grids, world-class type. The star is a
+          live, animated agentic pipeline auditing a real invoice. Built to win CFO trust.</p>
+        <span class="open">Open draft
+          <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M1 7h15M11 1l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </a>
+
+    <!-- DRAFT 3 -->
+    <a class="card" href="draft-3-terrain/" aria-label="Open Draft 3 — Terrain">
+      <div class="preview pv3">
+        <span class="num" style="color:#15140f;mix-blend-mode:normal">03 / TERRAIN</span>
+        <svg class="topo" viewBox="0 0 360 230" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
+          <g stroke="#c9972e" stroke-width="1" opacity=".7">
+            <path d="M-20 60C60 30 120 90 200 70 280 50 340 95 400 75"/>
+            <path d="M-20 95C60 65 120 125 200 105 280 85 340 130 400 110"/>
+            <path d="M-20 130C60 100 120 160 200 140 280 120 340 165 400 145"/>
+            <path d="M-20 165C60 135 120 195 200 175 280 155 340 200 400 180"/>
+            <path d="M-20 200C60 170 120 230 200 210 280 190 340 235 400 215"/>
+          </g>
+          <ellipse cx="250" cy="120" rx="58" ry="34" stroke="#0b6e4f" stroke-width="1" opacity=".5"/>
+          <ellipse cx="250" cy="120" rx="34" ry="19" stroke="#0b6e4f" stroke-width="1" opacity=".5"/>
+        </svg>
+        <div class="coord">Lagos · PH<br/>06°27′N&nbsp;03°23′E</div>
+        <div class="aa">Aa<em>.</em></div>
+      </div>
+      <div class="body">
+        <div class="cname">Terrain</div>
+        <div class="tags"><span class="tag">Editorial</span><span class="tag">Art-directed</span><span class="tag">Nigeria-forward</span></div>
+        <p class="desc">The bold swing. Topographic contours, a nodding pumpjack, geological strata,
+          Fraunces serif. Scrolling descends through topsoil → oil → gold. Awwwards energy.</p>
+        <span class="open">Open draft
+          <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M1 7h15M11 1l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </a>
+
+  </section>
+
+  <section class="note">
+    <div class="col">
+      <b>How to review</b><br/>
+      Open all three, look on desktop <i style="color:var(--mut2)">and</i> phone, then just tell me the
+      one you like — or mix-and-match (“Terrain’s hero + Clarity’s pipeline”). I’ll polish the chosen
+      direction into the real site: copy, sections, contact form, favicon, SEO, and deploy notes.
+      <div class="steps">
+        <span><i>01</i> Open each draft and scroll through</span>
+        <span><i>02</i> Pick a direction (or a blend)</span>
+        <span><i>03</i> I refine, then hand off GitHub-Pages-ready files</span>
+      </div>
+    </div>
+    <div class="col" style="max-width:300px">
+      <b>Hosting</b><br/>
+      Each draft is a single self-contained <code>index.html</code> in its own folder — no build step.
+      Push to a repo, enable GitHub Pages, done.
+    </div>
+  </section>
+</main>
+</div>
+
+<script>
+  // staggered card reveal
+  const cards=[...document.querySelectorAll('.card')];
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){cards.forEach(c=>c.classList.add('in'));}
+  else{
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){
+      const i=cards.indexOf(e.target); setTimeout(()=>e.target.classList.add('in'), i*120);
+      io.unobserve(e.target);}});},{threshold:.18});
+    cards.forEach(c=>io.observe(c));
+  }
+</script>
+</body>
+</html>
